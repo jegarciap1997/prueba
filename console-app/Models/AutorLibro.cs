@@ -12,6 +12,6 @@ public class AutorLibro
     public string? Nombre { get; set; }
     public Guid CiudadId { get; set; }
 
-    public Ciudades Ciudad { get; set; }
+    public Ciudades Ciudad { get; set; } = new Ciudades();
     public ICollection<Libro> Libros { get; set; } = new List<Libro>();
 }

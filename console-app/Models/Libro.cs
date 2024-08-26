@@ -13,5 +13,5 @@ public class Libro
     public DateTime AnioPublicacion { get; set; }
     public Guid AutorId { get; set; }
 
-    public AutorLibro Autor { get; set; }
+    public AutorLibro Autor { get; set; } = new AutorLibro();
 }

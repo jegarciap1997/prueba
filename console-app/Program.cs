@@ -14,6 +14,10 @@ var lista = new List<List<int>>
     }
 };
 
+// Creacion de datos
+// PruebaService.CrearDatos();
+
+PruebaService.ListarDatos();
 
 
 Console.WriteLine($"Resultado punto 3: {PruebaService.xyz(lista)}");

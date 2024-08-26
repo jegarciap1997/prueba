@@ -1,3 +1,5 @@
+
+using Microsoft.EntityFrameworkCore;
 using Contexts;
 using Models;
 
@@ -55,50 +57,76 @@ public class PruebaService
         return Math.Abs(sumP - sumS);
     }
 
-    static void CrearDatos()
+    public static void CrearDatos()
     {
         using (var context = new PruebaContext())
         {
-            // Asegúrate de que la base de datos esté creada
             context.Database.EnsureCreated();
 
-            // Crear y agregar una nueva ciudad
             var ciudad = new Ciudades
             {
-                CiudadId = Guid.NewGuid(), // Generar un nuevo Guid
-                Nombre = "Ciudad Ejemplo"
+                CiudadId = Guid.NewGuid(),
+                Nombre = "Bogota"
             };
 
             context.Ciudades.Add(ciudad);
             context.SaveChanges();
 
-            // Crear y agregar un nuevo autor
             var autor = new AutorLibro
             {
-                AutorId = Guid.NewGuid(), // Generar un nuevo Guid
-                Nombre = "Autor Ejemplo",
-                CiudadId = ciudad.CiudadId // Establecer la clave foránea
+                AutorId = Guid.NewGuid(),
+                Nombre = "Garcia Marquez",
+                CiudadId = ciudad.CiudadId
             };
 
-            context.Autores.Add(autor);
+            context.AutorLibro.Add(autor);
             context.SaveChanges();
 
-            // Crear y agregar un nuevo libro
             var libro = new Libro
             {
-                LibroId = Guid.NewGuid(), // Generar un nuevo Guid
-                Nombre = "Libro Ejemplo",
+                LibroId = Guid.NewGuid(),
+                Nombre = "Cien años de soledad",
                 AnioPublicacion = DateTime.Now,
-                AutorId = autor.AutorId // Establecer la clave foránea
+                AutorId = autor.AutorId
             };
 
-            context.Libros.Add(libro);
+            context.Libro.Add(libro);
             context.SaveChanges();
+            
+        }
+    }
 
-            Console.WriteLine("Datos creados con éxito:");
-            Console.WriteLine($"Ciudad: {ciudad.Nombre}");
-            Console.WriteLine($"Autor: {autor.Nombre}");
-            Console.WriteLine($"Libro: {libro.Nombre}");
+    public static void ListarDatos()
+    {
+        using (var context = new PruebaContext())
+        {
+
+            context.Database.EnsureCreated();
+
+            Console.WriteLine("Ciudades:");
+            var ciudades = context.Ciudades.ToList();
+
+            foreach (var ciudad in ciudades)
+            {
+                Console.WriteLine($"CiudadId: {ciudad.CiudadId}, Nombre: {ciudad.Nombre}");
+            }
+
+            Console.WriteLine("\nAutores:");
+            var autores = context.AutorLibro.Include(a => a.Ciudad).ToList();
+
+            foreach (var autor in autores)
+            {
+                Console.WriteLine($"AutorId: {autor.AutorId}, Nombre: {autor.Nombre}, Ciudad: {autor.Ciudad?.Nombre}");
+            }
+
+            Console.WriteLine("\nLibros:");
+
+            var libros = context.Libro.Include(l => l.Autor).ToList();
+
+            foreach (var libro in libros)
+            {
+                Console.WriteLine($"LibroId: {libro.LibroId}, Nombre: {libro.Nombre}, Año de Publicación: {libro.AnioPublicacion}, Autor: {libro.Autor?.Nombre}");
+            }
         }
     }
 
